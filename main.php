@@ -12,9 +12,8 @@ $questions = [
 
 $reponses = [1, 2, 3, 1, 3];
 $score = 0;
-$fichier = fopen("dernier_score.txt", "r+");
+$fichier = fopen("dernier_score.txt", "r");
 $lscore = fgets($fichier);
-
 $NB_QUESTIONS = count($questions);
 
 
@@ -23,7 +22,7 @@ echo "###################################################\n######## Qui veux gag
 
 
 if ($fichier !== false){
-    echo "Dernier score enregistré : ". $lscore ."/50.\n\n";
+    echo "Dernier score enregistré : ". rtrim($lscore, "\n") ."/50.\n\n";
 }
 
 
@@ -35,12 +34,13 @@ for($i = 0; $i < $NB_QUESTIONS; $i++){
     if ($answer == $reponses[$i]){
         $score+=10;
         echo "\nSuspeeeeeense\n\nBonne réponse!\n\n*Le score augmente de 10*\n\n###################################################\nScore : ". $score ."\n###################################################\n\n";
-    } else {
+    } else if (in_array($answer, $reponses)){
         echo "\nSuspeeeeeense\n\nMauvaise réponse...\n\n*Le score n'augmente pas...*\n\n###################################################\nScore : ". $score ."\n###################################################\n\n";
+    } else{
+        echo "\nT'es bourré ?\n\n";
+        $i--;
     }
 }
-
-
 
 $pourcentage = $score * 2;
 echo "########### GAME OVER ###########\nPourcentage de bonnes réponses : $pourcentage%\n\n";
@@ -52,6 +52,6 @@ if ($pourcentage >= 50){
     echo "Arrête arrête c'est nwar, c'est nwar...\n";
 }
 
-
-fwrite($fichier, "$score");
+$fichier = fopen("dernier_score.txt", "w");
+fwrite($fichier, "$score\n");
 fclose($fichier);
